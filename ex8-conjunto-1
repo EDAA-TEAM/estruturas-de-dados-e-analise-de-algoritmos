@@ -1,0 +1,96 @@
+#ifndef CONJUNTO_H
+#define CONJUNTO_H
+
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_SIZE 100 // Tamanho máximo do conjunto
+
+typedef struct {
+    int data[MAX_SIZE];
+    int size; // Número de elementos no conjunto
+} Conjunto;
+
+void initConjunto(Conjunto *conjunto) {
+    conjunto->size = 0;
+}
+
+bool isEmpty(Conjunto *conjunto) {
+    return conjunto->size == 0;
+}
+
+bool isFull(Conjunto *conjunto) {
+    return conjunto->size == MAX_SIZE;
+}
+
+bool contains(Conjunto *conjunto, int value) {
+    for (int i = 0; i < conjunto->size; i++) {
+        if (conjunto->data[i] == value) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void addElement(Conjunto *conjunto, int value) {
+    if (isFull(conjunto)) {
+        printf("O conjunto está cheio. Não é possível adicionar mais elementos.\n");
+        return;
+    }
+
+    if (!contains(conjunto, value)) {
+        conjunto->data[conjunto->size] = value;
+        conjunto->size++;
+    }
+}
+
+void removeElement(Conjunto *conjunto, int value) {
+    int index = -1;
+
+    for (int i = 0; i < conjunto->size; i++) {
+        if (conjunto->data[i] == value) {
+            index = i;
+            break;
+        }
+    }
+
+    if (index != -1) {
+        for (int i = index; i < conjunto->size - 1; i++) {
+            conjunto->data[i] = conjunto->data[i + 1];
+        }
+        conjunto->size--;
+    }
+}
+
+void updateElement(Conjunto *conjunto, int oldValue, int newValue) {
+    if (!contains(conjunto, oldValue)) {
+        printf("Elemento a ser atualizado não encontrado no conjunto.\n");
+        return;
+    }
+
+    if (contains(conjunto, newValue)) {
+        printf("O novo valor já existe no conjunto. Elementos duplicados não são permitidos.\n");
+        return;
+    }
+
+    for (int i = 0; i < conjunto->size; i++) {
+        if (conjunto->data[i] == oldValue) {
+            conjunto->data[i] = newValue;
+        }
+    }
+}
+
+void printConjunto(Conjunto *conjunto) {
+    if (isEmpty(conjunto)) {
+        printf("O conjunto está vazio.\n");
+        return;
+    }
+
+    printf("Conjunto (tamanho = %d): ", conjunto->size);
+    for (int i = 0; i < conjunto->size; i++) {
+        printf("%d ", conjunto->data[i]);
+    }
+    printf("\n");
+}
+
+#endif
