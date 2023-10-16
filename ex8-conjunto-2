@@ -1,0 +1,127 @@
+#ifndef CONJUNTO_H
+#define CONJUNTO_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+// Definição da estrutura de um nó do conjunto
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
+
+// Definição da estrutura do Conjunto
+typedef struct {
+    Node *head;
+} Conjunto;
+
+// Função para inicializar um Conjunto vazio
+void initConjunto(Conjunto *conjunto) {
+    conjunto->head = NULL;
+}
+
+// Função para verificar se o Conjunto está vazio
+bool isEmpty(Conjunto *conjunto) {
+    return conjunto->head == NULL;
+}
+
+// Função para verificar se um elemento está presente no Conjunto
+bool contains(Conjunto *conjunto, int value) {
+    Node *current = conjunto->head;
+    while (current != NULL) {
+        if (current->data == value) {
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
+}
+
+// Função para adicionar um elemento ao Conjunto
+void addElement(Conjunto *conjunto, int value) {
+    if (contains(conjunto, value)) {
+        printf("Elemento já existe no conjunto. Elementos duplicados não são permitidos.\n");
+        return;
+    }
+
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->next = conjunto->head;
+    conjunto->head = newNode;
+}
+
+// Função para remover um elemento do Conjunto
+void removeElement(Conjunto *conjunto, int value) {
+    if (isEmpty(conjunto)) {
+        printf("O conjunto está vazio. Não é possível remover elementos.\n");
+        return;
+    }
+
+    if (conjunto->head->data == value) {
+        Node *temp = conjunto->head;
+        conjunto->head = conjunto->head->next;
+        free(temp);
+        return;
+    }
+
+    Node *current = conjunto->head;
+    while (current->next != NULL && current->next->data != value) {
+        current = current->next;
+    }
+
+    if (current->next != NULL) {
+        Node *temp = current->next;
+        current->next = current->next->next;
+        free(temp);
+    }
+}
+
+// Função para atualizar um elemento no Conjunto
+void updateElement(Conjunto *conjunto, int oldValue, int newValue) {
+    if (!contains(conjunto, oldValue)) {
+        printf("Elemento a ser atualizado não encontrado no conjunto.\n");
+        return;
+    }
+
+    if (contains(conjunto, newValue)) {
+        printf("O novo valor já existe no conjunto. Elementos duplicados não são permitidos.\n");
+        return;
+    }
+
+    Node *current = conjunto->head;
+    while (current != NULL) {
+        if (current->data == oldValue) {
+            current->data = newValue;
+            return;
+        }
+        current = current->next;
+    }
+}
+
+// Função para imprimir o conteúdo do Conjunto
+void printConjunto(Conjunto *conjunto) {
+    if (isEmpty(conjunto)) {
+        printf("O conjunto está vazio.\n");
+        return;
+    }
+
+    printf("Conjunto: ");
+    Node *current = conjunto->head;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+// Função para liberar a memória alocada para o Conjunto
+void freeConjunto(Conjunto *conjunto) {
+    while (!isEmpty(conjunto)) {
+        Node *temp = conjunto->head;
+        conjunto->head = conjunto->head->next;
+        free(temp);
+    }
+}
+
+#endif
