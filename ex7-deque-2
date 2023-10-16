@@ -1,0 +1,153 @@
+#ifndef DEQUE_H
+#define DEQUE_H
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definição da estrutura de um nó do deque
+typedef struct Node {
+    int data;
+    struct Node *prev;
+    struct Node *next;
+} Node;
+
+// Definição da estrutura do Deque
+typedef struct {
+    Node *front;
+    Node *rear;
+} Deque;
+
+// Função para inicializar um Deque vazio
+void initDeque(Deque *deque) {
+    deque->front = NULL;
+    deque->rear = NULL;
+}
+
+// Função para verificar se o Deque está vazio
+int isEmpty(Deque *deque) {
+    return deque->front == NULL;
+}
+
+// Função para adicionar um elemento na frente do Deque
+void pushFront(Deque *deque, int value) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->prev = NULL;
+    newNode->next = deque->front;
+
+    if (isEmpty(deque)) {
+        deque->front = newNode;
+        deque->rear = newNode;
+    } else {
+        deque->front->prev = newNode;
+        deque->front = newNode;
+    }
+}
+
+// Função para adicionar um elemento na parte de trás do Deque
+void pushBack(Deque *deque, int value) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->prev = deque->rear;
+    newNode->next = NULL;
+
+    if (isEmpty(deque)) {
+        deque->front = newNode;
+        deque->rear = newNode;
+    } else {
+        deque->rear->next = newNode;
+        deque->rear = newNode;
+    }
+}
+
+// Função para remover e obter o elemento na frente do Deque
+int popFront(Deque *deque) {
+    if (isEmpty(deque)) {
+        printf("O deque está vazio. Não é possível remover elementos.\n");
+        return -1; // Valor de erro
+    }
+
+    Node *frontNode = deque->front;
+    int value = frontNode->data;
+
+    deque->front = frontNode->next;
+    if (deque->front == NULL) {
+        // O deque está vazio agora
+        deque->rear = NULL;
+    } else {
+        deque->front->prev = NULL;
+    }
+
+    free(frontNode);
+    return value;
+}
+
+// Função para remover e obter o elemento na parte de trás do Deque
+int popBack(Deque *deque) {
+    if (isEmpty(deque)) {
+        printf("O deque está vazio. Não é possível remover elementos.\n");
+        return -1; // Valor de erro
+    }
+
+    Node *rearNode = deque->rear;
+    int value = rearNode->data;
+
+    deque->rear = rearNode->prev;
+    if (deque->rear == NULL) {
+        // O deque está vazio agora
+        deque->front = NULL;
+    } else {
+        deque->rear->next = NULL;
+    }
+
+    free(rearNode);
+    return value;
+}
+
+// Função para atualizar um elemento no Deque
+void updateElement(Deque *deque, int index, int newValue) {
+    if (isEmpty(deque)) {
+        printf("O deque está vazio. Não é possível atualizar elementos.\n");
+        return;
+    }
+
+    Node *current = deque->front;
+    int i = 0;
+
+    while (current != NULL && i < index) {
+        current = current->next;
+        i++;
+    }
+
+    if (current == NULL) {
+        printf("Índice fora dos limites do deque.\n");
+        return;
+    }
+
+    current->data = newValue;
+}
+
+// Função para imprimir o conteúdo do Deque
+void printDeque(Deque *deque) {
+    if (isEmpty(deque)) {
+        printf("O deque está vazio.\n");
+        return;
+    }
+
+    printf("Deque: ");
+    Node *current = deque->front;
+    while (current != NULL) {
+        printf("%d ", current->data);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+// Função para liberar a memória alocada para o Deque
+void freeDeque(Deque *deque) {
+    while (!isEmpty(deque)) {
+        popFront(deque);
+    }
+}
+
+#endif
