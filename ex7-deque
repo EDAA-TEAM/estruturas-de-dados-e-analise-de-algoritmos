@@ -1,0 +1,57 @@
+#ifndef DEQUE_H
+#define DEQUE_H
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_SIZE 100 // Tamanho máximo do deque
+
+typedef struct {
+    int data[MAX_SIZE];
+    int front; // Índice do início do deque
+    int rear;  // Índice do final do deque
+    int size;  // Número de elementos no deque
+} Deque;
+
+void initDeque(Deque *deque) {
+    deque->front = -1;
+    deque->rear = -1;
+    deque->size = 0;
+}
+
+int isEmpty(Deque *deque) {
+    return deque->size == 0;
+}
+
+int isFull(Deque *deque) {
+    return deque->size == MAX_SIZE;
+}
+
+void pushFront(Deque *deque, int value) {
+    if (isFull(deque)) {
+        printf("O deque está cheio. Não é possível adicionar mais elementos.\n");
+        return;
+    }
+
+    if (isEmpty(deque)) {
+        deque->front = deque->rear = 0;
+    } else {
+        deque->front = (deque->front - 1 + MAX_SIZE) % MAX_SIZE;
+    }
+
+    deque->data[deque->front] = value;
+    deque->size++;
+}
+
+void pushBack(Deque *deque, int value) {
+    if (isFull(deque)) {
+        printf("O deque está cheio. Não é possível adicionar mais elementos.\n");
+        return;
+    }
+
+    if (isEmpty(deque)) {
+        deque->front = deque->rear = 0;
+    } else {
+        deque->rear = (deque->rear + 1) % MAX_SIZE;
+    }
+
