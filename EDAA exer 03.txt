@@ -1,0 +1,17 @@
+#include <stdio.h>
+
+int main() {
+    float cotacaoDolar, valorDolar, valorReal;
+
+    printf("Digite a cotação do dólar em reais: ");
+    scanf("%f", &cotacaoDolar);
+
+    printf("Digite o valor em dólares: ");
+    scanf("%f", &valorDolar);
+
+    valorReal = valorDolar * cotacaoDolar;
+
+    printf("O valor em reais é: R$ %.2f\n", valorReal);
+
+    return 0;
+}

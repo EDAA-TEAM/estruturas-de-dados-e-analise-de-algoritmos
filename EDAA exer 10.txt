@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <math.h>
+
+int main() {
+    float raio;
+    float comprimento, area, volume;
+    const float pi = 3.14159;
+
+    printf("Digite o raio da esfera: ");
+    scanf("%f", &raio);
+
+    comprimento = 2 * pi * raio;
+
+    area = pi * raio * raio;
+
+    volume = (3.0 / 4.0) * pi * pow(raio, 3);
+
+    printf("Comprimento da esfera: %.2f\n", comprimento);
+    printf("Área da esfera: %.2f\n", area);
+    printf("Volume da esfera: %.2f\n", volume);
+
+    return 0;
+}

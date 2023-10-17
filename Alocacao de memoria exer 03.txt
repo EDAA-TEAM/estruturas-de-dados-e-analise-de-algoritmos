@@ -1,0 +1,187 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    char cpf[15];
+    char nome[50];
+    double salario;
+} Pessoa;
+
+Pessoa* alocarMemoria(int n) {
+    Pessoa* array = (Pessoa*) calloc(n, sizeof(Pessoa));
+    if (array == NULL) {
+        printf("Falha na alocação de memória.\n");
+        exit(1);
+    }
+    return array;
+}
+
+void preencherVetor(Pessoa* array, int n) {
+    for (int i = 0; i < n; i++) {
+        printf("Digite o CPF da pessoa %d: ", i + 1);
+        scanf(" %14s", array[i].cpf);
+        printf("Digite o nome da pessoa %d: ", i + 1);
+        scanf(" %49s", array[i].nome);
+        printf("Digite o salário da pessoa %d: ", i + 1);
+        scanf("%lf", &array[i].salario);
+    }
+}
+
+void imprimirVetor(Pessoa* array, int n) {
+    printf("Array:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Pessoa %d:\n", i + 1);
+        printf("CPF: %s\n", array[i].cpf);
+        printf("Nome: %s\n", array[i].nome);
+        printf("Salário: %.2lf\n", array[i].salario);
+    }
+}
+
+int main() {
+    int n;
+    printf("Digite o tamanho do array: ");
+    scanf("%d", &n);
+
+    Pessoa* array = alocarMemoria(n);
+    preencherVetor(array, n);
+    imprimirVetor(array, n);
+
+    free(array);
+    return 0;
+}
+Neste código, foi criada a estrutura Pessoa com os campos CPF, nome e salário. As funções alocarMemoria, preencherVetor e imprimirVetor foram modificadas para lidar com o vetor de estruturas Pessoa. A alocação, preenchimento e impressão dos dados da estrutura Pessoa são feitas por meio dessas funções.
+
+
+
+
+User
+Altere o codigo abaixo para que seja um vetor de estrutura Veículo. A estrutura Veículo deve possuir os campos: número do chassi, marca, modelo e preço. Os trechos de código para alocação de memória, preenchimento do vetor, impressão do vetor e realocação de memória devem ser
+realizados por funções.    #include <stdio.h>
+#include <stdlib.h>
+int main() {
+int *array, n;
+printf("Digite o tamanho inicial do array: ");
+scanf("%d", &n);
+// Alocação dinâmica de memória usando malloc
+array = (int *) malloc(n * sizeof(int));
+if (array == NULL) {
+printf("Falha na alocação de memória.\n");
+return 1;
+}
+// Preencher o array
+for (int i = 0; i < n; i++) {
+array[i] = i * 10;
+}
+// Imprimir o array
+printf("Array (antes da realocação): ");
+for (int i = 0; i < n; i++) {
+printf("%d ", array[i]);
+}
+// Realocar o array para um tamanho maior
+int novo_tamanho = n + 5;
+
+array = (int *) realloc(array, novo_tamanho * sizeof(int));
+if (array == NULL) {
+printf("Falha na realocação de memória.\n");
+return 1;
+}
+// Preencher os elementos adicionais
+for (int i = n; i < novo_tamanho; i++) {
+array[i] = i * 10;
+}
+// Imprimir o array após a realocação
+printf("\nArray (após a realocação): ");
+for (int i = 0; i < novo_tamanho; i++) {
+printf("%d ", array[i]);
+}
+// Liberar a memória alocada
+free(array);
+return 0;
+}
+ChatGPT
+Para criar um vetor de estruturas Veiculo com os campos número do chassi, marca, modelo e preço, e modificar as funções para alocar memória, preencher o vetor, imprimir o vetor e realocar memória, você pode seguir o exemplo abaixo:
+
+c
+Copy code
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    char numeroChassi[20];
+    char marca[50];
+    char modelo[50];
+    double preco;
+} Veiculo;
+
+Veiculo* alocarMemoria(int n) {
+    Veiculo* array = (Veiculo*) malloc(n * sizeof(Veiculo));
+    if (array == NULL) {
+        printf("Falha na alocação de memória.\n");
+        exit(1);
+    }
+    return array;
+}
+
+void preencherVetor(Veiculo* array, int n) {
+    for (int i = 0; i < n; i++) {
+        printf("Digite o número do chassi do veículo %d: ", i + 1);
+        scanf(" %19s", array[i].numeroChassi);
+        printf("Digite a marca do veículo %d: ", i + 1);
+        scanf(" %49s", array[i].marca);
+        printf("Digite o modelo do veículo %d: ", i + 1);
+        scanf(" %49s", array[i].modelo);
+        printf("Digite o preço do veículo %d: ", i + 1);
+        scanf("%lf", &array[i].preco);
+    }
+}
+
+void imprimirVetor(Veiculo* array, int n) {
+    printf("Array:\n");
+    for (int i = 0; i < n; i++) {
+        printf("Veículo %d:\n", i + 1);
+        printf("Número do Chassi: %s\n", array[i].numeroChassi);
+        printf("Marca: %s\n", array[i].marca);
+        printf("Modelo: %s\n", array[i].modelo);
+        printf("Preço: %.2lf\n", array[i].preco);
+    }
+}
+
+Veiculo* realocarMemoria(Veiculo* array, int* n, int tamanho_adicional) {
+    *n += tamanho_adicional;
+    array = (Veiculo*) realloc(array, *n * sizeof(Veiculo));
+    if (array == NULL) {
+        printf("Falha na realocação de memória.\n");
+        exit(1);
+    }
+    return array;
+}
+
+int main() {
+    int n;
+    printf("Digite o tamanho inicial do array: ");
+    scanf("%d", &n);
+
+    Veiculo* array = alocarMemoria(n);
+    preencherVetor(array, n);
+    imprimirVetor(array, n);
+
+    int tamanho_adicional = 5;
+    array = realocarMemoria(array, &n, tamanho_adicional);
+    for (int i = n; i < n + tamanho_adicional; i++) {
+        printf("Digite os dados para o veículo adicional %d:\n", i - n + 1);
+        printf("Veículo %d:\n", i + 1);
+        printf("Digite o número do chassi: ");
+        scanf(" %19s", array[i].numeroChassi);
+        printf("Digite a marca: ");
+        scanf(" %49s", array[i].marca);
+        printf("Digite o modelo: ");
+        scanf(" %49s", array[i].modelo);
+        printf("Digite o preço: ");
+        scanf("%lf", &array[i].preco);
+    }
+
+    imprimirVetor(array, n + tamanho_adicional);
+
+    free(array);
+    return 0;
+}

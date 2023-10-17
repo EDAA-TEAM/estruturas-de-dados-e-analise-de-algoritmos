@@ -1,0 +1,17 @@
+#include <stdio.h>
+
+int main() {
+    float diagonalMaior, diagonalMenor, area;
+
+    printf("Digite a diagonal maior do losango: ");
+    scanf("%f", &diagonalMaior);
+
+    printf("Digite a diagonal menor do losango: ");
+    scanf("%f", &diagonalMenor);
+
+    area = (diagonalMaior * diagonalMenor) / 2.0;
+
+    printf("A área do losango é: %.2f\n", area);
+
+    return 0;
+}

@@ -1,0 +1,21 @@
+#include <stdio.h>
+
+int main() {
+    float peso, novoPesoEngordar, novoPesoEmagrecer;
+
+ 
+    printf("Digite o peso da pessoa: ");
+    scanf("%f", &peso);
+
+  
+    novoPesoEngordar = peso * 1.15;
+
+  
+    novoPesoEmagrecer = peso * 0.8;
+
+
+    printf("Se a pessoa engordar 15%%, o novo peso será: %.2f\n", novoPesoEngordar);
+    printf("Se a pessoa emagrecer 20%%, o novo peso será: %.2f\n", novoPesoEmagrecer);
+
+    return 0;
+}
