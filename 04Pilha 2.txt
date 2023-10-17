@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LIVROS 100
+
+struct Livro {
+    char titulo[100];
+    char autor[50];
+    int edicao;
+};
+
+struct NodoLivro {
+    struct Livro livro;
+    struct NodoLivro *proximo;
+};
+
+struct PilhaLivros {
+    struct NodoLivro *topo;
+};
+
+struct PilhaLivros *criarPilha() {
+    struct PilhaLivros *pilha = (struct PilhaLivros *)malloc(sizeof(struct PilhaLivros));
+    pilha->topo = NULL;
+    return pilha;
+}
+
+void empilharLivro(struct PilhaLivros *pilha, struct Livro novo_livro) {
+    struct NodoLivro *novo_nodo = (struct NodoLivro *)malloc(sizeof(struct NodoLivro));
+    novo_nodo->livro = novo_livro;
+    novo_nodo->proximo = pilha->topo;
+    pilha->topo = novo_nodo;
+}
+
+void imprimirPilhaTela(struct PilhaLivros *pilha) {
+    printf("Livros na pilha:\n");
+    struct NodoLivro *atual = pilha->topo;
+    while (atual != NULL) {
+        printf("Título: %s, Autor: %s, Edição: %d\n", atual->livro.titulo, atual->livro.autor, atual->livro.edicao);
+        atual = atual->proximo;
+    }
+}
+
+void imprimirPilhaArquivo(struct PilhaLivros *pilha, char *nome_arquivo) {
+    FILE *arquivo = fopen(nome_arquivo, "wb");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo para escrita.\n");
+        return;
+    }
+    struct NodoLivro *atual = pilha->topo;
+    while (atual != NULL) {
+        fwrite(&(atual->livro), sizeof(struct Livro), 1, arquivo);
+        atual = atual->proximo;
+    }
+    fclose(arquivo);
+}
+
+void lerArquivoPilha(struct PilhaLivros *pilha, char *nome_arquivo) {
+    FILE *arquivo = fopen(nome_arquivo, "rb");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo para leitura.\n");
+        return;
+    }
+    struct Livro novo_livro;
+    while (fread(&novo_livro, sizeof(struct Livro), 1, arquivo)) {
+        empilharLivro(pilha, novo_livro);
+    }
+    fclose(arquivo);
+}
+
+int livrosParaDesempilhar(struct PilhaLivros *pilha, char *titulo) {
+    struct NodoLivro *atual = pilha->topo;
+    int contador = 0;
+    while (atual != NULL) {
+        contador++;
+        if (strcmp(atual->livro.titulo, titulo) == 0) {
+            return contador;
+        }
+        atual = atual->proximo;
+    }
+    return -1;
+}
+
+int main() {
+    struct PilhaLivros *pilha = criarPilha();
+    char codigo = 's';
+
+    while (codigo != 'n') {
+        struct Livro novo_livro;
+        printf("Título do livro: ");
+        scanf("%s", novo_livro.titulo);
+        printf("Autor do livro: ");
+        scanf("%s", novo_livro.autor);
+        printf("Edição do livro: ");
+        scanf("%d", &novo_livro.edicao);
+
+        empilharLivro(pilha, novo_livro);
+
+        printf("Deseja cadastrar outro livro? (s/n): ");
+        getchar(); // Limpar o buffer de entrada
+        scanf("%c", &codigo);
+    }
+
+    imprimirPilhaTela(pilha);
+    imprimirPilhaArquivo(pilha, "acervo.bin");
+
+    // Exemplo de como ler o conteúdo do arquivo para a pilha
+    struct PilhaLivros *novaPilha = criarPilha();
+    lerArquivoPilha(novaPilha, "acervo.bin");
+
+    // Exemplo de como verificar quantos livros precisam ser desempilhados
+    char titulo[100];
+    printf("Digite o título do livro: ");
+    scanf("%s", titulo);
+    int num_livros = livrosParaDesempilhar(novaPilha, titulo);
+    if (num_livros >= 0) {
+        printf("Precisam ser desempilhados %d livros até o livro desejado.\n", num_livros);
+    } else {
+        printf("O livro %s não está na pilha.\n", titulo);
+    }
+
+    return 0;
+}
