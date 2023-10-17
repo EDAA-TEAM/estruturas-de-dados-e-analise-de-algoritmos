@@ -1,0 +1,133 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_PEDIDOS 100
+
+struct Pedido {
+    char nome_cliente[50];
+    char telefone[20];
+    char endereco[100];
+    char produto[50];
+    float valor;
+};
+
+struct FilaPedidos {
+    struct Pedido pedidos[MAX_PEDIDOS];
+    int inicio, fim;
+};
+
+void enfileirar(struct FilaPedidos *fila, struct Pedido novo_pedido) {
+    if (fila->fim == MAX_PEDIDOS) {
+        printf("Fila cheia, impossível enfileirar.\n");
+        return;
+    }
+    fila->pedidos[fila->fim] = novo_pedido;
+    fila->fim++;
+}
+
+struct Pedido desenfileirar(struct FilaPedidos *fila) {
+    if (fila->inicio == fila->fim) {
+        struct Pedido pedido_vazio = {"", "", "", "", 0.0};
+        printf("Fila vazia, impossível desenfileirar.\n");
+        return pedido_vazio;
+    }
+    struct Pedido primeiro_pedido = fila->pedidos[fila->inicio];
+    for (int i = 0; i < fila->fim - 1; i++) {
+        fila->pedidos[i] = fila->pedidos[i + 1];
+    }
+    fila->fim--;
+    return primeiro_pedido;
+}
+
+void imprimirFilaTela(struct FilaPedidos fila) {
+    printf("Pedidos na fila:\n");
+    for (int i = fila.inicio; i < fila.fim; i++) {
+        printf("Nome do cliente: %s, Produto: %s\n", fila.pedidos[i].nome_cliente, fila.pedidos[i].produto);
+    }
+}
+
+void imprimirFilaArquivo(struct FilaPedidos fila, char *nome_arquivo) {
+    FILE *arquivo = fopen(nome_arquivo, "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo para escrita.\n");
+        return;
+    }
+    for (int i = fila.inicio; i < fila.fim; i++) {
+        fprintf(arquivo, "Nome do cliente: %s, Produto: %s\n", fila.pedidos[i].nome_cliente, fila.pedidos[i].produto);
+    }
+    fclose(arquivo);
+}
+
+void lerArquivoFila(struct FilaPedidos *fila, char *nome_arquivo) {
+    FILE *arquivo = fopen(nome_arquivo, "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo para leitura.\n");
+        return;
+    }
+    char buffer[200];
+    struct Pedido novo_pedido;
+    while (fgets(buffer, sizeof(buffer), arquivo) != NULL) {
+        sscanf(buffer, "Nome do cliente: %[^,], Produto: %s", novo_pedido.nome_cliente, novo_pedido.produto);
+        enfileirar(fila, novo_pedido);
+    }
+    fclose(arquivo);
+}
+
+int pedidosNaFrente(struct FilaPedidos fila, char *nome_cliente) {
+    for (int i = fila.inicio; i < fila.fim; i++) {
+        if (strcmp(fila.pedidos[i].nome_cliente, nome_cliente) == 0) {
+            return i - fila.inicio;
+        }
+    }
+    return -1;
+}
+
+int main() {
+    struct FilaPedidos fila;
+    fila.inicio = 0;
+    fila.fim = 0;
+    char codigo = 's';
+
+    while (codigo != 'n') {
+        struct Pedido novo_pedido;
+        printf("Nome do cliente: ");
+        scanf("%s", novo_pedido.nome_cliente);
+        printf("Telefone para contato: ");
+        scanf("%s", novo_pedido.telefone);
+        printf("Endereco para entrega: ");
+        scanf("%s", novo_pedido.endereco);
+        printf("Produto pedido: ");
+        scanf("%s", novo_pedido.produto);
+        printf("Valor do produto: ");
+        scanf("%f", &novo_pedido.valor);
+
+        enfileirar(&fila, novo_pedido);
+
+        printf("Deseja cadastrar outro pedido? (s/n): ");
+        getchar(); // Limpar o buffer de entrada
+        scanf("%c", &codigo);
+    }
+
+    imprimirFilaTela(fila);
+    imprimirFilaArquivo(fila, "pedidos.txt");
+
+    // Exemplo de como ler o conteúdo do arquivo para a fila
+    struct FilaPedidos novaFila;
+    novaFila.inicio = 0;
+    novaFila.fim = 0;
+    lerArquivoFila(&novaFila, "pedidos.txt");
+
+    // Exemplo de como verificar quantos pedidos estão na frente de um cliente
+    char nome_cliente[50];
+    printf("Digite o nome do cliente: ");
+    scanf("%s", nome_cliente);
+    int num_pedidos = pedidosNaFrente(novaFila, nome_cliente);
+    if (num_pedidos >= 0) {
+        printf("Existem %d pedidos na frente do cliente %s.\n", num_pedidos, nome_cliente);
+    } else {
+        printf("O cliente %s nao esta na fila.\n", nome_cliente);
+    }
+
+    return 0;
+}

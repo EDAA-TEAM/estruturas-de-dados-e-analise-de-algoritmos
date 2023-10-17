@@ -1,0 +1,28 @@
+// fila.h
+
+#ifndef FILA_H
+#define FILA_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Nodo {
+    char *dado;
+    struct Nodo *ant;
+    struct Nodo *prox;
+} Nodo;
+
+typedef struct Fila {
+    Nodo *inicio;
+    Nodo *fim;
+    int tamanho;
+} Fila;
+
+Fila *criarFila();
+void enfileirar(Fila *fila, char *dado);
+char *desenfileirar(Fila *fila);
+void imprimirFilaTela(Fila *fila);
+void limparFila(Fila *fila);
+
+#endif

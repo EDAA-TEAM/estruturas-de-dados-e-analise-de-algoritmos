@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "fila.h"
+
+int main() {
+    Fila *fila = criarFila();
+    char caractere;
+
+    printf("Digite uma string (Digite '#' para parar): \n");
+
+    do {
+        caractere = getchar();
+        if (caractere != '#') {
+            char *ptr_caractere = (char *)malloc(sizeof(char));
+            *ptr_caractere = caractere;
+            enfileirar(fila, ptr_caractere);
+        }
+    } while (caractere != '#');
+
+    printf("String lida: ");
+    while (fila->inicio != NULL) {
+        printf("%c ", *(desenfileirar(fila)));
+    }
+    printf("\n");
+
+    return 0;
+}
